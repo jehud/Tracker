@@ -9,4 +9,13 @@ package com.tracker.persistence;
  */
 public class MetricsWriter
 {
+    public static void writeCountMetric(String name, long count)
+    {
+
+    }
+
+    public static void writeTimerMetric(String name, long startTime, long endTime)
+    {
+        
+    }
 }
