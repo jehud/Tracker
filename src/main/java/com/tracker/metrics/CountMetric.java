@@ -2,13 +2,26 @@ package com.tracker.metrics;
 
 /**
  * Tracker - a metrics collection and display system
- * <p/>
+ *
  * User: jtruelove
  * Date: Feb 13, 2011
  * Time: 9:14:16 PM
  */
 class CountMetric implements Metric
 {
+    private long count;
+    private String name;
+    private int observations;
+    private long timeStamp;
+
+    CountMetric(String name, long count)
+    {
+       this.name = name;
+       this.count = count;
+       observations = 1;
+       timeStamp = System.currentTimeMillis();
+    }
+
     public int getType()
     {
         return 1;
@@ -16,26 +29,40 @@ class CountMetric implements Metric
 
     public long getCount()
     {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return count;
     }
 
     public int getNumberOfObservations()
     {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return observations;
     }
 
     public String getName()
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return name;
     }
 
     public long getTimeStamp()
     {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return timeStamp;
     }
 
     public void aggregateMetric(Metric metric)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
+        count += metric.getCount();
+        observations++;
+    }
+
+    public String toString()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append(getType());
+        builder.append(",");
+        builder.append(name);
+        builder.append(",");
+        builder.append(count);
+        builder.append(",");
+        builder.append(System.currentTimeMillis());
+        return builder.toString();
     }
 }

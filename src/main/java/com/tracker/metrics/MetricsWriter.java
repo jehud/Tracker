@@ -66,17 +66,22 @@ class MetricsWriter
 
     private static void writeStatisticsToDisk()
     {
+        drainQueue();
         synchronized (groupedMetrics)
         {
+            StringBuilder builder = new StringBuilder();
             for (Metric metric : groupedMetrics.values())
             {
-                // TODO add write to disk mechanism
+                builder.append(metric);
+                builder.append(";");
             }
+            // TODO remove last char
+            String metricString = builder.toString();
+            // TODO add write to disk mechanism
             groupedMetrics.clear();
         }
 
     }
-
 
     class QueueDrainer extends TimerTask
     {
