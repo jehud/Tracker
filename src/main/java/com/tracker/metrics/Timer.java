@@ -1,6 +1,5 @@
 package com.tracker.metrics;
 
-import com.tracker.persistence.MetricsWriter;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -33,14 +32,14 @@ public class Timer
     {
         validateCounter(metricName);
         endTime = System.nanoTime();
-        MetricsWriter.writeTimerMetric(metricName, startTime, endTime);
+        MetricsWriter.writeTimerMetric(metricName, (endTime - startTime) / 100000);
     }
 
     public void stop()
     {
        validateCounter();
        endTime = System.nanoTime();
-       MetricsWriter.writeTimerMetric(defaultMetricName, startTime, endTime);
+       MetricsWriter.writeTimerMetric(defaultMetricName, (endTime - startTime) / 100000);
     }
 
     public void setMetricName(String metricName)

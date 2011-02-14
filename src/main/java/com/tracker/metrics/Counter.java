@@ -1,6 +1,5 @@
 package com.tracker.metrics;
 
-import com.tracker.persistence.MetricsWriter;
 import org.apache.commons.lang.StringUtils;
 
 /**
