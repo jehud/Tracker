@@ -1,7 +1,7 @@
 package com.tracker.config;
 
 /**
- * Tracker - a metrics collection and display system
+ * Tracker - a BasicMetricsTest collection and display system
  * 
  * User: jtruelove
  * Date: Feb 13, 2011

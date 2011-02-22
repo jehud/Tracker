@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tracker - a metrics collection and display system
+ * Tracker - a BasicMetricsTest collection and display system
  * 
  * User: jtruelove
  * Date: Feb 13, 2011
@@ -12,7 +12,7 @@ import java.util.List;
  */
 class TimeMetric implements Metric
 {
-    private List<Long> times;
+    private List<Double> times;
     private long count;
     private String name;
     private int observations;
@@ -22,9 +22,9 @@ class TimeMetric implements Metric
      */
     private long timeStamp;
 
-    TimeMetric(String name, long time)
+    TimeMetric(final String name, final double time)
     {
-       times = new ArrayList<Long>();
+       times = new ArrayList<Double>();
        this.name = name;
        count = 1;
        observations = 1;
@@ -42,22 +42,12 @@ class TimeMetric implements Metric
         return count;
     }
 
-    public int getNumberOfObservations()
-    {
-        return observations;
-    }
-
     public String getName()
     {
         return name;
     }
 
-    public long getTimeStamp()
-    {
-        return timeStamp;
-    }
-
-    public long getTime()
+    public double getTime()
     {
         if(times.size() < 1)
         {
@@ -65,7 +55,7 @@ class TimeMetric implements Metric
         }
 
         long total = 0;
-        for (long time : times)
+        for (double time : times)
         {
            total += time;
         }
@@ -74,6 +64,7 @@ class TimeMetric implements Metric
 
     public void aggregateMetric(Metric metric)
     {
+        //TODO don't love this need to think about it
         if (metric instanceof TimeMetric)
         {
             count++;

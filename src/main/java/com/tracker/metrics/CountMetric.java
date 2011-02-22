@@ -1,7 +1,7 @@
 package com.tracker.metrics;
 
 /**
- * Tracker - a metrics collection and display system
+ * Tracker - a BasicMetricsTest collection and display system
  *
  * User: jtruelove
  * Date: Feb 13, 2011
@@ -29,22 +29,12 @@ class CountMetric implements Metric
 
     public long getCount()
     {
-        return count;
-    }
-
-    public int getNumberOfObservations()
-    {
-        return observations;
+        return Math.round((double)count / (double)observations);
     }
 
     public String getName()
     {
         return name;
-    }
-
-    public long getTimeStamp()
-    {
-        return timeStamp;
     }
 
     public void aggregateMetric(Metric metric)
@@ -60,7 +50,7 @@ class CountMetric implements Metric
         builder.append(",");
         builder.append(name);
         builder.append(",");
-        builder.append(count);
+        builder.append(getCount());
         builder.append(",");
         builder.append(System.currentTimeMillis());
         return builder.toString();

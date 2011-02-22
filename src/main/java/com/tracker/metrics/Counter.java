@@ -3,11 +3,13 @@ package com.tracker.metrics;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Created by IntelliJ IDEA.
+ * Represents a basic count metric,
+ *
+ * i.e. 1 Order was processed, 1 error occured, 5 items were added
+ *
  * User: jtruelove
  * Date: Feb 13, 2011
  * Time: 5:07:27 PM
- * To change this template use File | Settings | File Templates.
  */
 public final class Counter
 {
@@ -17,12 +19,12 @@ public final class Counter
     {
     }
 
-    public Counter(String metricName)
+    public Counter(final String metricName)
     {
         this.defaultMetricName = metricName;
     }
 
-    public Counter(String metricName, long count)
+    public Counter(final String metricName, final long count)
     {
         this.defaultMetricName = metricName;
         count(count);
@@ -30,29 +32,29 @@ public final class Counter
 
     public void countOne()
     {
-        validateCounter(defaultMetricName);
-        MetricsWriter.writeCountMetric(defaultMetricName, 1);
-    }
-
-    public void countOne(String metricName)
-    {
-        validateCounter(metricName);
-        MetricsWriter.writeCountMetric(metricName, 1);
-    }
-
-    public void count(String metricName, long count)
-    {
-        validateCounter(metricName);
-        MetricsWriter.writeCountMetric(metricName, count);
-    }
-
-    public void count(long count)
-    {
         validateCounter();
-        MetricsWriter.writeCountMetric(defaultMetricName, count);
+        MetricsWriterFactory.getWriter().writeCountMetric(defaultMetricName, 1);
     }
 
-    public void setMetricName(String metricName)
+    public void countOne(final String metricName)
+    {
+        validateCounter(metricName);
+        MetricsWriterFactory.getWriter().writeCountMetric(metricName, 1);
+    }
+
+    public void count(final String metricName, final long count)
+    {
+        validateCounter(metricName, count);
+        MetricsWriterFactory.getWriter().writeCountMetric(metricName, count);
+    }
+
+    public void count(final long count)
+    {
+        validateCounter(defaultMetricName, count);
+        MetricsWriterFactory.getWriter().writeCountMetric(defaultMetricName, count);
+    }
+
+    public void setMetricName(final String metricName)
     {
         this.defaultMetricName = metricName;
     }
@@ -64,14 +66,25 @@ public final class Counter
 
     private void validateCounter()
     {
-        validateCounter(defaultMetricName);
+        validateCounter(defaultMetricName, 1);
     }
 
-    private static void validateCounter(String metricName)
+    private void validateCounter(final String metricName)
     {
-        if(StringUtils.isBlank(metricName))
+        validateCounter(metricName, 1);
+    }
+
+
+    private static void validateCounter(final String metricName, final long count)
+    {
+        if (StringUtils.isBlank(metricName))
         {
-           throw new IllegalArgumentException("An empty counter name was specified, you must specify a metric name");
+            throw new IllegalArgumentException("An empty counter name was specified, you must specify a metric name");
+        }
+
+        if (count < 0)
+        {
+            throw new IllegalArgumentException("Counts need to be positive numbers, count: " + count + " is not valid.");
         }
     }
 

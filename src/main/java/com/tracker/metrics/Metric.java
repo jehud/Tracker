@@ -1,7 +1,7 @@
 package com.tracker.metrics;
 
 /**
- * Tracker - a metrics collection and display system
+ * Tracker - a BasicMetricsTest collection and display system
  *
  * User: jtruelove
  * Date: Feb 13, 2011
@@ -9,10 +9,12 @@ package com.tracker.metrics;
  */
 interface Metric
 {
+    /**
+     * Returns the type of the metric being tracked, i.e. Count or Time
+     * @return
+     */
     public int getType();
     public long getCount();
-    public int getNumberOfObservations();
     public String getName();
-    public long getTimeStamp();
     public void aggregateMetric(Metric metric);
 }

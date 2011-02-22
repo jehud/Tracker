@@ -32,14 +32,14 @@ public class Timer
     {
         validateCounter(metricName);
         endTime = System.nanoTime();
-        MetricsWriter.writeTimerMetric(metricName, (endTime - startTime) / 100000);
+        MetricsWriterFactory.getWriter().writeTimerMetric(metricName, (endTime - startTime) / 1000000);
     }
 
     public void stop()
     {
        validateCounter();
        endTime = System.nanoTime();
-       MetricsWriter.writeTimerMetric(defaultMetricName, (endTime - startTime) / 100000);
+       MetricsWriterFactory.getWriter().writeTimerMetric(defaultMetricName, (endTime - startTime) / 1000000);
     }
 
     public void setMetricName(String metricName)
