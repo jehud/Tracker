@@ -51,7 +51,7 @@ class TimeMetric implements Metric
     {
         if(times.size() < 1)
         {
-            throw new IllegalArgumentException("Times should never be 0, this class is internal");
+            throw new IllegalStateException("Times should never be 0, this class is internal");
         }
 
         long total = 0;
@@ -87,8 +87,6 @@ class TimeMetric implements Metric
         builder.append(getTime());
         builder.append(",");
         builder.append(count);
-        builder.append(",");
-        builder.append(System.currentTimeMillis());
         return builder.toString();
     }
 }

@@ -12,6 +12,9 @@ class CountMetric implements Metric
     private long count;
     private String name;
     private int observations;
+    /**
+     * Not currently used as we don't store the timestamp every count just the timestamp at write currently
+     */
     private long timeStamp;
 
     CountMetric(String name, long count)
@@ -51,8 +54,6 @@ class CountMetric implements Metric
         builder.append(name);
         builder.append(",");
         builder.append(getCount());
-        builder.append(",");
-        builder.append(System.currentTimeMillis());
         return builder.toString();
     }
 }

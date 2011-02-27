@@ -4,16 +4,14 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Handles writing BasicMetricsTest to disk in a synchronized effecient manner
- *
+ * <p/>
  * User: jtruelove
  * Date: Feb 13, 2011
  * Time: 5:09:19 PM
@@ -46,6 +44,7 @@ class MetricsWriterFactory
          */
         private MetricWriter()
         {
+            HashMap<String, String> foo;
             queue = new LinkedBlockingQueue<Metric>();
             groupedMetrics = new ConcurrentHashMap<String, Metric>();
             Runtime.getRuntime().addShutdownHook(new ShutdownHook());
@@ -88,7 +87,7 @@ class MetricsWriterFactory
         /**
          * Handles storing a count metric before it's written to disk
          *
-         * @param name the name of the metric being counted
+         * @param name  the name of the metric being counted
          * @param count the count of the metric passed in
          */
         void writeCountMetric(final String name, final long count)
@@ -100,7 +99,7 @@ class MetricsWriterFactory
         /**
          * Handles storing a timer metric before it's written to disk
          *
-         * @param name the name of the timer metric
+         * @param name        the name of the timer metric
          * @param timeInMilli the time taken in milliseconds
          */
         void writeTimerMetric(final String name, final double timeInMilli)
@@ -116,11 +115,8 @@ class MetricsWriterFactory
         {
             List<Metric> list = null;
             // block and drain
-            synchronized (queue)
-            {
-                list = new ArrayList<Metric>(queue.size());
-                queue.drainTo(list);
-            }
+            list = new ArrayList<Metric>(queue.size());
+            queue.drainTo(list);
             logger.debug("Flushed {} items from queue", list.size());
             // aggregate the BasicMetricsTest
             for (Metric metric : list)
@@ -146,19 +142,24 @@ class MetricsWriterFactory
             drainQueue();
             synchronized (groupedMetrics)
             {
-                StringBuilder builder = new StringBuilder();
-                for (Metric metric : groupedMetrics.values())
+                if (groupedMetrics.size() > 0)
                 {
-                    builder.append(metric);
-                    builder.append(";");
-                }
+                    StringBuilder builder = new StringBuilder();
+                    //start the line with the timestamp of the writing
+                    builder.append(System.currentTimeMillis()).append(";");
+                    for (Metric metric : groupedMetrics.values())
+                    {
+                        builder.append(metric);
+                        builder.append(";");
+                    }
 
-                String metrics = builder.toString();
-                if (!StringUtils.isBlank(metrics))
-                {
-                    // TODO figure out long term which / how to configure this logger in the best way
-                    logger.info(StringUtils.chop(metrics));
-                    groupedMetrics.clear();
+                    String metrics = builder.toString();
+                    if (!StringUtils.isBlank(metrics))
+                    {
+                        // TODO figure out long term which / how to configure this logger in the best way
+                        logger.info(StringUtils.chop(metrics));
+                        groupedMetrics.clear();
+                    }
                 }
             }
 
@@ -192,7 +193,7 @@ class MetricsWriterFactory
                 {
                     drainQueue();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     logger.error("Got exception while attempting to drain internal metric queue, ex: " + ex);
                 }
@@ -210,7 +211,7 @@ class MetricsWriterFactory
                 {
                     writeStatisticsToDisk();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     logger.error("Got exception while attempting to write BasicMetricsTest to disk, ex: " + ex);
                 }
