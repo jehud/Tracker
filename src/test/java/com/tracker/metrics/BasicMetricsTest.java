@@ -2,6 +2,8 @@ package com.tracker.metrics;
 
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
  * Tracker - a BasicMetricsTest collection and display system
  * <p/>
@@ -12,8 +14,14 @@ import org.junit.Test;
 public class BasicMetricsTest
 {
     @Test
-    public void testCountOne() throws InterruptedException
+    public void testCountOne() throws InterruptedException, IOException
     {
+        /*Properties prop = new Properties();
+        prop.put("Foo", "bar");
+        prop.put("testList", "1,then2,3");
+        FileWriter fw = new FileWriter(new File("/Users/jtruelove/JavaProjects/test.txt"));
+        prop.store(fw, "test file");*/
+
         Timer testTimer = new Timer("testTime");
         Counter counter = new Counter("TestCounter");
         counter.countOne();
