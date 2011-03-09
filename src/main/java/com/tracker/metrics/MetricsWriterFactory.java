@@ -1,5 +1,6 @@
 package com.tracker.metrics;
 
+import com.tracker.config.ConfigManager;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,20 +45,31 @@ class MetricsWriterFactory
          */
         private MetricWriter()
         {
-            HashMap<String, String> foo;
+            if(!ConfigManager.isInitialized())
+            {
+                logger.error("The was an error initializing Tracker no metrics will be collected.");
+                initialized = false;
+                return;
+            }
+
             queue = new LinkedBlockingQueue<Metric>();
             groupedMetrics = new ConcurrentHashMap<String, Metric>();
             Runtime.getRuntime().addShutdownHook(new ShutdownHook());
 
             // default to 10 seconds, this will be config driven
-            diskWritePeriodInMilli = 10000;
+            diskWritePeriodInMilli = 1000 * ConfigManager.getWriteFrequency();
             queueDrainPeriodInMilli = diskWritePeriodInMilli / 2;
             timingHandler = new Timer();
             timingHandler.scheduleAtFixedRate(new QueueDrainer(), queueDrainPeriodInMilli, queueDrainPeriodInMilli);
             timingHandler.scheduleAtFixedRate(new DiskWriter(), diskWritePeriodInMilli, diskWritePeriodInMilli);
             logger.info("Initialized BasicMetricsTest writer {}", this);
+            initialized = true;
         }
 
+        /**
+         * Flag to let us know if everything was initialized correctly
+         */
+        private boolean initialized;
 
         /**
          * How often do we write the metrics to disk
@@ -92,7 +104,10 @@ class MetricsWriterFactory
          */
         void writeCountMetric(final String name, final long count)
         {
-            queue.add(new CountMetric(name, count));
+            if(initialized)
+            {
+                queue.add(new CountMetric(name, count));
+            }
 
         }
 
@@ -104,7 +119,10 @@ class MetricsWriterFactory
          */
         void writeTimerMetric(final String name, final double timeInMilli)
         {
-            queue.add(new TimeMetric(name, timeInMilli));
+            if(initialized)
+            {
+                queue.add(new TimeMetric(name, timeInMilli));
+            }
         }
 
 
