@@ -1,11 +1,12 @@
 package com.tracker.config;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.FileReader;
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -32,7 +33,7 @@ public class ConfigManager
     /**
      * Properties set by user
      *
-     * TODO consider long term if we watch this file and update these settings dynimically without a restart
+     * TODO consider long term if we watch this file and update these settings dynamically without a restart, listeners etc..
      */
     private static String appenderName;
     private static int writeFrequency;
@@ -46,6 +47,9 @@ public class ConfigManager
      * Properties that must be set for the metrics library, add more as needed
      */
     private static String[] requiredProperties = {WRITE_FREQUENCY_KEY, APPENDER_NAME_KEY};
+
+    private ConfigManager()
+    {}
 
     static
     {
@@ -98,9 +102,18 @@ public class ConfigManager
         Properties properties = new Properties();
         try
         {
-            reader = new FileReader(new File(CONFIG_FILE));
-            properties.load(reader);
-            reader.close();
+            URL configFile = Thread.currentThread().getContextClassLoader().getResource(CONFIG_FILE);
+            if(null == configFile || StringUtils.isBlank(configFile.getFile()))
+            {
+                // TODO set the defaults for the timing and appender with a warning
+            }
+            else
+            {
+                logger.info("Using tracker.config file located at " + configFile);
+                reader = new FileReader(configFile.getFile());
+                properties.load(reader);
+                reader.close();
+            }
         }
         catch (IOException ex)
         {
