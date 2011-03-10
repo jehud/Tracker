@@ -26,7 +26,7 @@ public class ConfigManager
     /**
      * Constants used to reference property file and properties
      */
-    private static final String CONFIG_FILE = "tracker.config";
+    private static final String CONFIG_FILE = "/tracker.config";
     private static final String WRITE_FREQUENCY_KEY = "write.frequency.in.seconds";
     private static final String APPENDER_NAME_KEY = "metric.appender.name";
 
@@ -102,7 +102,7 @@ public class ConfigManager
         Properties properties = new Properties();
         try
         {
-            URL configFile = Thread.currentThread().getContextClassLoader().getResource(CONFIG_FILE);
+            URL configFile = ConfigManager.class.getResource(CONFIG_FILE);
             if(null == configFile || StringUtils.isBlank(configFile.getFile()))
             {
                 // TODO set the defaults for the timing and appender with a warning

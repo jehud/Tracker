@@ -25,7 +25,7 @@ function stop
 
     # standard PID collector
     PID=`ps aux | grep $APP_NAME | grep -v grep | awk '{print $2}'`
-    echo "Killing pid $PID"
+    echo "Killing pid $PID cleanly with -15"
     kill -15 $PID
     # if pkill exists
     #pkill -f $APP_NAME
@@ -41,7 +41,7 @@ function isRunning
     fi
 }
 
-# use to set classpath eventially
+# use to set classpath eventually
 #JAR_LIST=`ls $JAR_DIR/*.jar`
 #JARS=`echo JAR_LIST | sed "s/ /:/g"`
 
