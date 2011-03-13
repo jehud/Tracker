@@ -31,6 +31,12 @@ public class ConfigManager
     private static final String APPENDER_NAME_KEY = "metric.appender.name";
 
     /**
+     * Default values if no properties file
+     */
+    private static final String WRITE_FREQUENCY_DEFAULT = "10";
+    private static final String APPENDER_NAME_DEFAULT = "metrics-appender";
+
+    /**
      * Properties set by user
      *
      * TODO consider long term if we watch this file and update these settings dynamically without a restart, listeners etc..
@@ -51,6 +57,9 @@ public class ConfigManager
     private ConfigManager()
     {}
 
+    /**
+     * Tracker static constructor
+     */
     static
     {
         Properties properties = null;
@@ -105,7 +114,9 @@ public class ConfigManager
             URL configFile = ConfigManager.class.getResource(CONFIG_FILE);
             if(null == configFile || StringUtils.isBlank(configFile.getFile()))
             {
-                // TODO set the defaults for the timing and appender with a warning
+                properties.setProperty(WRITE_FREQUENCY_KEY, WRITE_FREQUENCY_DEFAULT);
+                properties.setProperty(APPENDER_NAME_KEY, APPENDER_NAME_DEFAULT);
+                logger.warn("Tracker config file " + CONFIG_FILE + " not found in classpath using defaults.");
             }
             else
             {
@@ -124,6 +135,11 @@ public class ConfigManager
         return properties;
     }
 
+    /**
+     * Validated the expected properties
+     *
+     * @param properties
+     */
     private static void validateProperties(Properties properties)
     {
         for (String key : requiredProperties)
